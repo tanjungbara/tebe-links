@@ -1,0 +1,637 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Spark Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: satu kolom sempit (maks 560px). Kuis satu pernyataan per layar. Hasil = kartu poster (angka sparks, meter, radar 4 pola) lalu tipe, peta pola, rencana 7 hari, ajakan teman senasib. Dark-first sesuai palet akun. */
+:root {
+  --bg: #1D2025;
+  --surface: #272B32;
+  --fg: #F3F1EC;
+  --muted: #AEA9A0;
+  --line: #3B4049;
+  --accent: #FF9F1C;
+  --accent-ink: #FF9F1C;
+  --on-accent: #1D2025;
+  --font-display: "Archivo", "Arial Black", Arial, sans-serif;
+  --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F3F1EC; --surface: #FBFAF7; --fg: #1D2025; --muted: #5E5A53; --line: #D8D3C8;
+    --accent: #FF9F1C; --accent-ink: #8A4F00; --on-accent: #1D2025; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F3F1EC; --surface: #FBFAF7; --fg: #1D2025; --muted: #5E5A53; --line: #D8D3C8;
+  --accent: #FF9F1C; --accent-ink: #8A4F00; --on-accent: #1D2025; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.55;
+  padding-block: 24px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 560px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+.handle { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.stack { display: flex; flex-direction: column; gap: 22px; }
+.meter { display: flex; gap: 5px; align-items: flex-end; height: 56px; }
+.meter i { flex: 1; min-width: 0; border-radius: 3px; background: var(--line); height: 100%; }
+.meter i:nth-child(1) { height: 30%; } .meter i:nth-child(2) { height: 38%; } .meter i:nth-child(3) { height: 46%; }
+.meter i:nth-child(4) { height: 54%; } .meter i:nth-child(5) { height: 62%; } .meter i:nth-child(6) { height: 70%; }
+.meter i:nth-child(7) { height: 78%; } .meter i:nth-child(8) { height: 86%; } .meter i:nth-child(9) { height: 93%; } .meter i:nth-child(10) { height: 100%; }
+.meter i.on { background: var(--accent); }
+.hero h1 { font-size: clamp(44px, 14vw, 72px); }
+.hero h1 span { color: var(--accent-ink); }
+.lede { color: var(--muted); }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.facts div { border-top: 2px solid var(--line); padding-top: 10px; font-size: 14px; color: var(--muted); }
+.facts b { display: block; font: 900 26px/1 var(--font-display); color: var(--fg); margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+.btn {
+  font: 800 17px/1.1 var(--font-display); letter-spacing: 0.01em;
+  background: var(--accent); color: var(--on-accent); border: 0; border-radius: 10px;
+  padding: 17px 22px; cursor: pointer; text-align: center; text-decoration: none; display: inline-block;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn.ghost { background: transparent; color: var(--fg); border: 1.5px solid var(--line); }
+.btn.ghost:hover { border-color: var(--muted); }
+.btn:focus-visible, .opt:focus-visible, .link:focus-visible, .chk input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 3px; }
+.meta { font-size: 14px; color: var(--muted); }
+.progress { display: flex; gap: 3px; }
+.progress b { flex: 1; min-width: 0; height: 5px; border-radius: 3px; background: var(--line); }
+.progress b.done { background: var(--accent); }
+.qnum { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+.q { font-size: clamp(25px, 7vw, 32px); }
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opt {
+  text-align: left; font: 500 17px/1.3 var(--font-body); color: var(--fg);
+  background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 16px 18px; cursor: pointer; width: 100%;
+}
+.opt:hover { border-color: var(--muted); }
+.opt[aria-checked="true"] { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
+.link { background: none; border: 0; color: var(--muted); font: 600 15px var(--font-body); cursor: pointer; padding: 6px 0; text-align: left; text-decoration: underline; text-underline-offset: 3px; width: fit-content; }
+
+/* kartu poster hasil */
+.poster { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 14px; }
+.poster .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.score { display: flex; align-items: flex-end; gap: 14px; }
+.score .num { font: 900 clamp(64px, 20vw, 92px)/0.85 var(--font-display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.score .num small { font-size: 0.32em; color: var(--muted); letter-spacing: 0; margin-left: 4px; }
+.score .meter { flex: 1; min-width: 0; height: 64px; }
+.lvl { font: 900 14px var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); }
+.poster h2 { font-size: clamp(34px, 10vw, 48px); }
+.radar { width: 100%; height: auto; display: block; }
+.radar .ring { fill: none; stroke: var(--line); stroke-width: 1; }
+.radar .axis { stroke: var(--line); stroke-width: 1; }
+.radar .poly { fill: var(--accent); fill-opacity: 0.28; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; }
+.radar .dot { fill: var(--accent); }
+.radar text { fill: var(--muted); font: 600 13px var(--font-body); }
+.radar text.hi { fill: var(--accent-ink); font-weight: 800; }
+.poster .foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+.shot { font-size: 14px; color: var(--muted); }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.card h3 { font-size: 21px; letter-spacing: -0.01em; }
+.card ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.sec h3 { font-size: 26px; margin-bottom: 4px; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 480px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.dont li::marker { color: var(--accent-ink); }
+.bars { display: flex; flex-direction: column; gap: 12px; }
+.bar { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; font-size: 15px; }
+.bar .track { grid-column: 1 / -1; height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.bar .fill { height: 100%; background: var(--muted); border-radius: 4px; }
+.bar.top .fill { background: var(--accent); }
+.bar.top span:first-child { font-weight: 700; }
+.bar span:last-child { font-variant-numeric: tabular-nums; color: var(--muted); }
+.delta b { font: 900 22px var(--font-display); color: var(--accent-ink); }
+
+/* rencana 7 hari */
+.plan { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.chk { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 13px 14px; cursor: pointer; }
+.chk input { position: absolute; opacity: 0; pointer-events: none; }
+.chk .box { width: 24px; height: 24px; border: 2px solid var(--muted); border-radius: 6px; display: grid; place-items: center; font: 900 15px var(--font-display); color: transparent; margin-top: 1px; }
+.chk input:checked + .box { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.chk input:focus-visible + .box { outline: 3px solid var(--accent); outline-offset: 2px; }
+.chk .day { font: 800 12px var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); display: block; }
+.chk input:checked ~ .txt { color: var(--muted); }
+.chk input:checked ~ .txt .day { color: var(--muted); }
+.prog { display: flex; align-items: center; gap: 12px; }
+.prog .track { flex: 1; height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.prog .fill { height: 100%; background: var(--accent); width: 0; }
+.prog span { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ajakan teman senasib */
+.join { background: var(--accent); color: var(--on-accent); border-radius: 16px; padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; }
+.join h3 { font-size: clamp(28px, 8.5vw, 38px); }
+.join ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.join .btn { background: var(--on-accent); color: var(--fg); }
+.join .meta { color: var(--on-accent); opacity: 0.8; }
+:root[data-theme="light"] .join .btn, :root:not([data-theme="dark"]) .join .btn { color: #F3F1EC; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.note { font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<main id="app">
+  <!-- INTRO -->
+  <section id="intro" class="stack hero">
+    <p class="handle">@tanjungbara30</p>
+    <div class="meter" id="introMeter" aria-hidden="true"></div>
+    <h1>Spark <span>Check</span></h1>
+    <p>Gue pernah bengong hampir setahun: tidur, scroll, otak tumpul, nggak ada gairah. Cek ini gue bikin buat lo yang lagi ngerasa hal serupa.</p>
+    <div class="facts">
+      <div><b>20</b>pernyataan</div>
+      <div><b>4</b>pola sparks</div>
+      <div><b>7</b>hari langkah kecil</div>
+    </div>
+    <p class="lede">Sekitar 3 menit. Jawab sesuai sebulan terakhir, bukan sesuai yang seharusnya. Jawaban lo nggak dikirim ke mana pun. Hasilnya cuma disimpan di browser lo, supaya bisa dibandingin pas cek ulang.</p>
+    <div><button class="btn" id="start" type="button">Mulai cek sparks</button></div>
+    <p id="prevHint" class="meta" hidden></p>
+  </section>
+
+  <!-- PERTANYAAN -->
+  <section id="quiz" class="stack" hidden>
+    <div class="progress" id="progress" aria-hidden="true"></div>
+    <p class="qnum" id="qnum" aria-live="polite"></p>
+    <h2 class="q" id="qtext"></h2>
+    <div class="opts" id="opts" role="radiogroup" aria-labelledby="qtext"></div>
+    <button class="link" id="back" type="button">← Sebelumnya</button>
+  </section>
+
+  <!-- HASIL -->
+  <section id="result" class="stack" hidden>
+    <article class="poster" id="poster">
+      <div class="top"><span class="handle">Spark Check</span><span class="handle" id="posterDate"></span></div>
+      <div class="score">
+        <div class="num"><span id="scoreNum">0</span><small>/100</small></div>
+        <div class="meter" id="resMeter" aria-hidden="true"></div>
+      </div>
+      <p class="lvl" id="levelLabel"></p>
+      <h2 id="typeName"></h2>
+      <p class="lede" id="typeShort"></p>
+      <svg class="radar" id="radar" viewBox="0 0 360 290" role="img" aria-label="Grafik radar empat pola sparks"></svg>
+      <div class="foot"><span>@tanjungbara30</span><span>Cek sparks lo juga</span></div>
+    </article>
+    <p class="shot">Screenshot kartu di atas, taruh di story, dan tag <b>@tanjungbara30</b>. Gue bakal repost.</p>
+    <div class="actions">
+      <a class="btn wa" href="#" target="_blank" rel="noopener" hidden>Gabung teman senasib</a>
+      <button class="btn ghost" id="copy" type="button">Salin hasil</button>
+    </div>
+    <p class="meta" id="copyMsg" role="status"></p>
+
+    <div class="sec stack" style="gap:12px">
+      <h3 id="typeTitle"></h3>
+      <p id="typeLine"></p>
+      <p class="meta" id="levelNote"></p>
+    </div>
+
+    <div class="two">
+      <div class="card"><h3>Tanda-tandanya</h3><ul id="signs"></ul></div>
+      <div class="card"><h3>Yang sering terjadi</h3><p id="why"></p></div>
+    </div>
+    <div class="card"><h3>Biasanya malah bikin makin redup</h3><ul class="dont" id="dont"></ul></div>
+
+    <div class="card">
+      <h3>Peta 4 pola lo</h3>
+      <div class="bars" id="bars"></div>
+      <p class="meta" id="mixNote"></p>
+    </div>
+
+    <div class="card" id="ctxCard">
+      <h3>Buat posisi lo sekarang</h3>
+      <p id="ctxLine"></p>
+      <p id="focusLine"></p>
+    </div>
+
+    <div class="sec stack" style="gap:12px">
+      <h3>Rencana 7 hari</h3>
+      <p class="meta">Satu langkah kecil per hari, maksimal 15 menit. Centang yang sudah lo kerjain. Progresnya tersimpan di browser lo.</p>
+      <div class="prog"><div class="track"><div class="fill" id="planFill"></div></div><span id="planCount"></span></div>
+      <ul class="plan" id="plan"></ul>
+    </div>
+
+    <article class="join">
+      <p class="handle" style="color:inherit;opacity:.8">Jangan nyalain sendirian</p>
+      <h3>Nyalain lagi Spark lo bareng teman senasib.</h3>
+      <p>Sparks gue nggak balik karena motivasi. Baliknya pelan, dan salah satu yang bantu adalah tahu gue nggak sendirian. Lo juga nggak.</p>
+      <ul>
+        <li>Langkah kecil yang bisa langsung dicoba</li>
+        <li>Cerita jujur dari proses gue mulai lagi</li>
+        <li>Kabar Spark Check berikutnya dan materi lanjutan</li>
+      </ul>
+      <a class="btn wa" href="#" target="_blank" rel="noopener" hidden>Gabung komunitas WhatsApp</a>
+      <p class="meta wa-soon" hidden>Link komunitas segera dibuka. Follow @tanjungbara30 dulu supaya nggak ketinggalan.</p>
+    </article>
+
+    <div class="card delta" id="deltaCard" hidden>
+      <h3>Dibanding cek sebelumnya</h3>
+      <p id="deltaLine"></p>
+    </div>
+
+    <div class="actions">
+      <button class="btn ghost" id="again" type="button">Ulangi cek</button>
+    </div>
+    <p class="meta" id="recheck"></p>
+    <p class="note">Ini cermin singkat, bukan diagnosis. Kalau rasa kosongnya makin berat atau mengganggu keseharian, ngobrol ke orang yang lo percaya atau tenaga profesional itu langkah yang masuk akal.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  // Link undangan WhatsApp. Kosong = tombol disembunyikan.
+  var WA_URL = "https://chat.whatsapp.com/J4YZeMvIwMCJVqiWuGwGZ5";
+
+  var OPTIONS = [
+    { label: "Hampir nggak pernah", v: 0 },
+    { label: "Kadang-kadang", v: 1 },
+    { label: "Sering", v: 2 },
+    { label: "Hampir tiap hari", v: 3 }
+  ];
+
+  var PROFILE = [
+    {
+      key: "posisi", t: "Sekarang lo lagi di posisi yang mana?",
+      opts: [
+        { label: "Karyawan", ctx: "Sebagai karyawan, sparks sering hilang bukan karena kerjaannya jelek, tapi karena lo nggak lagi ngerasa tumbuh. Cek bagian mana dari kerjaan lo yang masih bikin lo penasaran, sekecil apa pun." },
+        { label: "Punya usaha sendiri", ctx: "Sebagai pemilik usaha, lo terbiasa jadi mesin penggerak semua orang, jadi baterai sendiri sering paling akhir diurus. Perlakukan jadwal istirahat lo seperti jadwal supplier: nggak boleh dilewat." },
+        { label: "Lagi transisi atau nyari arah", ctx: "Di fase transisi, ketidakpastian itu sendiri yang nguras tenaga. Pecah targetnya jadi langkah mingguan, jangan satu lompatan besar." },
+        { label: "Freelance atau lainnya", ctx: "Kerja mandiri bikin batas hari dan malam kabur. Pasang jam selesai yang tegas dan jaga seperti janji ke klien." }
+      ]
+    },
+    {
+      key: "fokus", t: "Apa yang paling pengin lo nyalakan lagi?",
+      opts: [
+        { label: "Semangat kerja", focus: "Fokus 7 hari lo: cari satu bagian kerjaan yang masih bikin lo penasaran, dan kasih jatah waktu khusus buat itu." },
+        { label: "Hobi dan diri sendiri", focus: "Fokus 7 hari lo: balikin satu hal yang cuma buat lo, tanpa target dan tanpa harus ada hasilnya." },
+        { label: "Pertemanan dan kedekatan", focus: "Fokus 7 hari lo: satu kontak tulus per hari lebih kuat daripada satu acara besar sebulan sekali." },
+        { label: "Arah hidup", focus: "Fokus 7 hari lo: jangan cari jawaban besar dulu. Kumpulin tiga petunjuk kecil tentang hal yang bikin lo tertarik." }
+      ]
+    }
+  ];
+
+  // d: 0 hening, 1 tekor, 2 muter, 3 sendiri
+  var BY_DIM = [
+    [
+      "Gue bangun, jalanin hari, dan nggak ngerasa apa-apa. Nggak sedih, nggak senang.",
+      "Hal yang dulu bikin gue semangat sekarang rasanya biasa aja.",
+      "Ditanya \"gimana kabar?\", gue jawab \"aman\". Padahal gue sendiri nggak yakin.",
+      "Gue scroll HP lama banget tanpa tujuan, lalu nyesel.",
+      "Gue susah ngebayangin hal yang bikin gue nggak sabar nunggu minggu depan."
+    ],
+    [
+      "Jadwal gue padat, tapi hati rasanya kosong.",
+      "Tidur cukup, tapi bangun tetap capek.",
+      "Gue bersyukur sama hidup gue, tapi tetap ngerasa ada yang kurang.",
+      "Libur sehari nggak bikin gue benar-benar pulih.",
+      "Hal kecil (chat masuk, pertanyaan orang, deadline) gampang bikin gue lelah."
+    ],
+    [
+      "Gue sadar pengin ganti arah, tapi bingung mulai dari mana.",
+      "Gue mikir, \"Udah telat nggak sih mulai lagi di umur segini?\"",
+      "Gue ngebandingin diri sama temen seumuran yang kelihatannya udah jauh di depan.",
+      "Gue nyimpen satu keinginan lama yang belum berani gue jalanin.",
+      "Gue kepikiran resign atau banting setir, tapi takut sama risikonya."
+    ],
+    [
+      "Grup WA yang dulu ramai sekarang sepi, dan gue nggak tahu mau mulai ngobrol dari mana.",
+      "Gue lebih sering nunggu diajak daripada ngajak duluan.",
+      "Gue pengin cerita, tapi nggak nemu orang yang bakal ngerti tanpa ngasih nasihat.",
+      "Tiap kumpul, obrolannya terasa makin dangkal atau makin jarang nyambung.",
+      "Gue ngerasa sendirian di fase ini, seolah cuma gue yang begini."
+    ]
+  ];
+
+  var QUESTIONS = [];
+  PROFILE.forEach(function (p) { QUESTIONS.push({ profile: p }); });
+  for (var r = 0; r < 5; r++) for (var d = 0; d < 4; d++) QUESTIONS.push({ d: d, t: BY_DIM[d][r] });
+  var N_SCORED = 20;
+
+  var TYPES = [
+    {
+      name: "Mode Hening", short: "Hening", full: "Mode Hening",
+      line: "Bukan sedih, bukan senang. Rasanya datar, seperti hidup jalan tapi lo cuma ikut.",
+      why: "Setelah lama dipaksa kuat atau sibuk, banyak orang ngerasa datar. Bukan berarti lo rusak, sering kali itu tanda lo kelamaan jalan tanpa ngecek apa yang masih bikin lo bereaksi.",
+      signs: ["Hari berlalu tapi nggak ada yang terasa menyala.", "Hal yang dulu seru jadi biasa aja.", "\"Aman\" keluar otomatis, tanpa dicek benar atau nggak."],
+      dont: ["Maksa diri harus semangat sekarang juga.", "Nambah hiburan pasif sampai larut malam."],
+      plan: [
+        "Catat 3 hal yang lo rasain hari ini, sekecil apa pun (ngantuk, lapar, kesal). Ini latihan ngenalin sinyal.",
+        "Jalan kaki 15 menit tanpa headphone.",
+        "Dengerin satu lagu lama yang dulu lo suka sampai habis, tanpa buka HP.",
+        "Kerjain 15 menit satu hal yang dulu bikin lo nyala (gambar, main, masak, apa saja).",
+        "Taruh HP di luar jangkauan 1 jam sebelum tidur.",
+        "Tulis satu kalimat: hari ini apa yang paling nggak terasa membosankan?",
+        "Bilang ke satu orang: \"Akhir-akhir ini gue lagi datar.\""
+      ]
+    },
+    {
+      name: "Baterai Tekor", short: "Tekor", full: "Baterai Tekor",
+      line: "Capek yang bukan capek badan. Jadwal penuh, tapi isinya nggak ngisi ulang lo.",
+      why: "Kalau kegiatan lo lebih banyak nguras daripada ngisi, istirahat doang nggak cukup. Yang perlu diubah komposisi harinya, bukan cuma jam tidurnya.",
+      signs: ["Istirahat ada, pulih nggak.", "Bersyukur, tapi tetap kosong.", "Hal kecil gampang bikin lelah."],
+      dont: ["Nambah target biar kelihatan produktif.", "Mikir \"orang lain lebih berat dari gue\" lalu nggak ngasih jeda."],
+      plan: [
+        "Coret satu hal dari daftar minggu ini yang sebenarnya nggak harus lo kerjain.",
+        "Satu jam tanpa layar dan tanpa notifikasi.",
+        "Tidur 30 menit lebih awal dari biasanya.",
+        "Bilang \"nanti ya\" ke satu permintaan yang nggak mendesak.",
+        "Makan siang tanpa kerja dan tanpa layar.",
+        "Tulis 3 hal yang paling nguras dan 3 yang paling ngisi lo. Besok kurangi satu yang nguras.",
+        "Jadwalin satu blok kosong minggu depan dan jaga seperti meeting penting."
+      ]
+    },
+    {
+      name: "Muter-muter", short: "Muter", full: "Muter-muter",
+      line: "Lo tahu ada yang mau diubah, tapi jalannya belum kelihatan. Bukan telat, lagi muter.",
+      why: "Jeda sebelum mulai lagi sering terlihat seperti diam, padahal otak lo lagi ngitung risiko dan bandingin opsi. Yang bantu bukan jawaban besar, tapi eksperimen kecil yang murah.",
+      signs: ["Ada keinginan lama yang masih disimpan.", "Sering ngecek hidup orang lain dan ngerasa ketinggalan.", "\"Mulai dari mana?\" lebih berisik daripada jawabannya."],
+      dont: ["Nunggu yakin 100 persen baru bergerak.", "Ngebandingin start lo dengan hasil akhir orang lain."],
+      plan: [
+        "Tulis 3 hal yang lo kuasai dan masih lo suka. Itu bekal yang ikut lo bawa.",
+        "Tulis satu kalimat ketakutan terbesar soal mulai lagi, lalu tulis kemungkinan terburuk yang realistis.",
+        "Pilih satu orang yang sudah pindah jalur dan kirim pesan singkat minta ngobrol 15 menit.",
+        "Riset 20 menit satu bidang yang menarik, satu saja, bukan lima.",
+        "Ngobrol 15 menit dengan orang tadi, atau orang lain yang relevan.",
+        "Pilih satu eksperimen 2 minggu (kursus gratis, proyek mini, magang singkat).",
+        "Tulis langkah pertama lo lengkap dengan tanggalnya."
+      ]
+    },
+    {
+      name: "Sendiri-sendiri", short: "Sendiri", full: "Sendiri-sendiri",
+      line: "Teman makin sedikit, obrolan makin dangkal, dan lo nggak yakin siapa yang bisa diajak cerita.",
+      why: "Di usia 30-an lingkaran pertemanan menyusut itu umum: kerja, keluarga, pindah kota. Yang bikin berat adalah ngira cuma lo yang begini.",
+      signs: ["Grup lama sepi.", "Lo nunggu diajak, bukan ngajak.", "Pengin cerita, tapi nggak mau dinasihati."],
+      dont: ["Nunggu orang lain ngajak duluan.", "Nyimpen semuanya sendiri sampai ngerasa nggak ada yang ngerti."],
+      plan: [
+        "Kirim chat \"lagi apa?\" ke satu teman lama, tanpa agenda.",
+        "Tulis 3 nama orang yang bikin lo nyaman cerita.",
+        "Ajak satu orang telepon atau ngopi 15 menit.",
+        "Balas satu story atau status orang dengan tulus, bukan emoji doang.",
+        "Cerita satu hal jujur ke satu orang, misalnya: \"Gue lagi nggak baik-baik aja.\"",
+        "Gabung satu komunitas kecil yang isinya orang seumuran, termasuk komunitas teman senasib di bawah.",
+        "Jadwalin pertemuan berikutnya, jangan cuma bilang \"nanti ya\"."
+      ]
+    }
+  ];
+
+  var LEVELS = [
+    { min: 67, label: "Sparks masih nyala", note: "Lo masih punya nyala. Jaga dengan kebiasaan kecil, jangan nunggu sampai redup." },
+    { min: 34, label: "Sparks mulai redup", note: "Lo ada di zona tengah. Belum padam, tapi sudah waktunya ngasih perhatian." },
+    { min: 0, label: "Sparks redup banget", note: "Nyalanya kecil banget sekarang. Pelan-pelan aja, dan jangan jalanin ini sendirian." }
+  ];
+
+  var $ = function (id) { return document.getElementById(id); };
+  var answers = [];
+  var idx = 0;
+  var advanceTimer = null;
+  var profile = {};
+  var lastText = "";
+  var currentType = 0;
+
+  function store(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+  function load(key) { try { var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function fmtDate(iso) { try { return new Date(iso).toLocaleDateString("id-ID", { day: "numeric", month: "short" }); } catch (e) { return ""; } }
+
+  function buildMeter(el, lit) {
+    el.textContent = "";
+    for (var i = 0; i < 10; i++) {
+      var b = document.createElement("i");
+      if (i < lit) b.className = "on";
+      el.appendChild(b);
+    }
+  }
+
+  function show(id) {
+    ["intro", "quiz", "result"].forEach(function (s) { $(s).hidden = s !== id; });
+    window.scrollTo(0, 0);
+  }
+
+  function renderProgress() {
+    var p = $("progress"); p.textContent = "";
+    for (var i = 0; i < QUESTIONS.length; i++) {
+      var b = document.createElement("b");
+      if (i < idx) b.className = "done";
+      p.appendChild(b);
+    }
+  }
+
+  function renderQuestion() {
+    var q = QUESTIONS[idx];
+    var wrap = $("opts"); wrap.textContent = "";
+    renderProgress();
+    var list, text;
+    if (q.profile) {
+      $("qnum").textContent = "Kenalan dulu · " + (idx + 1) + " dari " + PROFILE.length;
+      text = q.profile.t;
+      list = q.profile.opts.map(function (o, i) { return { label: o.label, v: i }; });
+    } else {
+      $("qnum").textContent = "Pernyataan " + (idx - PROFILE.length + 1) + " dari " + N_SCORED;
+      text = q.t;
+      list = OPTIONS;
+    }
+    $("qtext").textContent = text;
+    list.forEach(function (o) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "opt";
+      btn.setAttribute("role", "radio");
+      btn.setAttribute("aria-checked", answers[idx] === o.v ? "true" : "false");
+      btn.textContent = o.label;
+      btn.addEventListener("click", function () { choose(o.v); });
+      wrap.appendChild(btn);
+    });
+    $("back").hidden = idx === 0;
+  }
+
+  function choose(v) {
+    if (advanceTimer) return;
+    answers[idx] = v;
+    renderQuestion();
+    advanceTimer = setTimeout(function () {
+      advanceTimer = null;
+      if (idx < QUESTIONS.length - 1) { idx++; renderQuestion(); } else { finish(); }
+    }, 220);
+  }
+
+  var NS = "http://www.w3.org/2000/svg";
+  function sv(tag, attrs, text) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function drawRadar(pcts, top) {
+    var svg = $("radar"); svg.textContent = "";
+    var cx = 180, cy = 145, R = 92;
+    var dirs = [[0, -1], [1, 0], [0, 1], [-1, 0]]; // atas, kanan, bawah, kiri
+    [0.33, 0.66, 1].forEach(function (k) {
+      var pts = dirs.map(function (d) { return (cx + d[0] * R * k) + "," + (cy + d[1] * R * k); }).join(" ");
+      svg.appendChild(sv("polygon", { "class": "ring", points: pts }));
+    });
+    dirs.forEach(function (d) {
+      svg.appendChild(sv("line", { "class": "axis", x1: cx, y1: cy, x2: cx + d[0] * R, y2: cy + d[1] * R }));
+    });
+    var poly = dirs.map(function (d, i) {
+      var k = Math.max(0.06, pcts[i] / 100);
+      return (cx + d[0] * R * k) + "," + (cy + d[1] * R * k);
+    });
+    svg.appendChild(sv("polygon", { "class": "poly", points: poly.join(" ") }));
+    dirs.forEach(function (d, i) {
+      var k = Math.max(0.06, pcts[i] / 100);
+      svg.appendChild(sv("circle", { "class": "dot", cx: cx + d[0] * R * k, cy: cy + d[1] * R * k, r: 4.5 }));
+    });
+    var labels = [
+      { x: cx, y: cy - R - 14, a: "middle" },
+      { x: cx + R + 12, y: cy + 5, a: "start" },
+      { x: cx, y: cy + R + 26, a: "middle" },
+      { x: cx - R - 12, y: cy + 5, a: "end" }
+    ];
+    labels.forEach(function (l, i) {
+      svg.appendChild(sv("text", { x: l.x, y: l.y, "text-anchor": l.a, "class": i === top ? "hi" : "" }, TYPES[i].short + " " + pcts[i] + "%"));
+    });
+  }
+
+  function renderPlan(t) {
+    var key = "sparkcheck.plan." + t;
+    var saved = load(key) || [];
+    var ul = $("plan"); ul.textContent = "";
+    var type = TYPES[t];
+    function update() {
+      var n = saved.filter(Boolean).length;
+      $("planCount").textContent = n + " dari 7";
+      $("planFill").style.width = Math.round(n / 7 * 100) + "%";
+    }
+    type.plan.forEach(function (txt, i) {
+      var li = document.createElement("li");
+      var lab = document.createElement("label"); lab.className = "chk";
+      var inp = document.createElement("input"); inp.type = "checkbox"; inp.id = "plan" + i; inp.checked = !!saved[i];
+      var box = document.createElement("span"); box.className = "box"; box.setAttribute("aria-hidden", "true"); box.textContent = "✓";
+      var wrap = document.createElement("span"); wrap.className = "txt";
+      var day = document.createElement("span"); day.className = "day"; day.textContent = "Hari " + (i + 1);
+      wrap.appendChild(day); wrap.appendChild(document.createTextNode(txt));
+      inp.addEventListener("change", function () { saved[i] = inp.checked; store(key, saved); update(); });
+      lab.appendChild(inp); lab.appendChild(box); lab.appendChild(wrap);
+      li.appendChild(lab); ul.appendChild(li);
+    });
+    update();
+  }
+
+  function finish() {
+    var sums = [0, 0, 0, 0];
+    var ans = {};
+    QUESTIONS.forEach(function (q, i) {
+      if (q.profile) ans[q.profile.key] = q.profile.opts[answers[i]];
+      else sums[q.d] += answers[i] || 0;
+    });
+    var total = sums[0] + sums[1] + sums[2] + sums[3];
+    var pcts = sums.map(function (s) { return Math.round(s / 15 * 100); });
+    var top = 0;
+    for (var i = 1; i < 4; i++) if (sums[i] > sums[top]) top = i;
+    var type = TYPES[top]; currentType = top;
+    var index = Math.max(0, Math.min(100, Math.round((1 - total / 60) * 100)));
+    var level = LEVELS.filter(function (l) { return index >= l.min; })[0];
+    var now = new Date();
+
+    $("scoreNum").textContent = index;
+    buildMeter($("resMeter"), Math.round(index / 10));
+    $("levelLabel").textContent = level.label;
+    $("typeName").textContent = type.name;
+    $("typeShort").textContent = type.line;
+    $("posterDate").textContent = now.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+    drawRadar(pcts, top);
+
+    $("typeTitle").textContent = "Tipe lo: " + type.name;
+    $("typeLine").textContent = type.line;
+    $("levelNote").textContent = level.note;
+    $("why").textContent = type.why;
+    var ul = $("signs"); ul.textContent = "";
+    type.signs.forEach(function (s) { var li = document.createElement("li"); li.textContent = s; ul.appendChild(li); });
+    var dl = $("dont"); dl.textContent = "";
+    type.dont.forEach(function (s) { var li = document.createElement("li"); li.textContent = s; dl.appendChild(li); });
+
+    var bars = $("bars"); bars.textContent = "";
+    TYPES.forEach(function (t, i) {
+      var row = document.createElement("div"); row.className = "bar" + (i === top ? " top" : "");
+      var a = document.createElement("span"); a.textContent = t.full;
+      var b = document.createElement("span"); b.textContent = pcts[i] + "%";
+      var tr = document.createElement("div"); tr.className = "track";
+      var f = document.createElement("div"); f.className = "fill"; f.style.width = pcts[i] + "%";
+      tr.appendChild(f); row.appendChild(a); row.appendChild(b); row.appendChild(tr); bars.appendChild(row);
+    });
+    var order = [0, 1, 2, 3].sort(function (x, y) { return sums[y] - sums[x]; });
+    var second = order[1];
+    $("mixNote").textContent = pcts[second] >= 40
+      ? "Campuran: " + TYPES[second].full + " juga terasa kuat di lo (" + pcts[second] + "%). Wajar, pola-pola ini sering datang bareng."
+      : "Persentase = seberapa sering tiap pola muncul di jawaban lo, dari 0 sampai 100.";
+
+    $("ctxLine").textContent = ans.posisi ? ans.posisi.ctx : "";
+    $("focusLine").textContent = ans.fokus ? ans.fokus.focus : "";
+
+    renderPlan(top);
+
+    var hist = load("sparkcheck.history") || [];
+    var prev = hist.length ? hist[hist.length - 1] : null;
+    if (prev) {
+      var diff = index - prev.index;
+      var word = diff > 0 ? "naik " + diff + " poin" : diff < 0 ? "turun " + Math.abs(diff) + " poin" : "sama";
+      $("deltaLine").textContent = "Cek sebelumnya (" + fmtDate(prev.t) + "): " + prev.index + " dengan tipe " + prev.type + ". Sekarang " + index + ", " + word + ". Naik-turun itu normal, yang dilihat arahnya dalam beberapa minggu.";
+      $("deltaCard").hidden = false;
+    } else { $("deltaCard").hidden = true; }
+    hist.push({ t: now.toISOString(), index: index, type: type.name });
+    store("sparkcheck.history", hist.slice(-10));
+
+    var next = new Date(now.getTime() + 30 * 86400000);
+    $("recheck").textContent = "Cek ulang sekitar " + next.toLocaleDateString("id-ID", { day: "numeric", month: "long" }) + " buat lihat perubahannya.";
+
+    lastText = "Hasil Spark Check gue: " + type.name + ", sparks " + index + "/100 (" + level.label.toLowerCase() + "). Cek punya lo di sini: " + location.href.split("#")[0];
+
+    var has = !!WA_URL;
+    Array.prototype.forEach.call(document.querySelectorAll("a.wa"), function (a) { if (has) a.href = WA_URL; a.hidden = !has; });
+    Array.prototype.forEach.call(document.querySelectorAll(".wa-soon"), function (p) { p.hidden = has; });
+    $("copyMsg").textContent = "";
+    show("result");
+  }
+
+  function restart() { answers = []; idx = 0; profile = {}; show("intro"); showPrev(); }
+
+  function showPrev() {
+    var hist = load("sparkcheck.history");
+    var el = $("prevHint");
+    if (hist && hist.length) {
+      var p = hist[hist.length - 1];
+      el.textContent = "Cek terakhir lo (" + fmtDate(p.t) + "): " + p.type + ", sparks " + p.index + "/100.";
+      el.hidden = false;
+    } else { el.hidden = true; }
+  }
+
+  $("start").addEventListener("click", function () { idx = 0; answers = []; renderQuestion(); show("quiz"); });
+  $("back").addEventListener("click", function () { if (idx > 0 && !advanceTimer) { idx--; renderQuestion(); } });
+  $("again").addEventListener("click", restart);
+  $("copy").addEventListener("click", function () {
+    var msg = $("copyMsg");
+    function fallback() {
+      var ta = document.createElement("textarea");
+      ta.value = lastText; ta.setAttribute("readonly", "");
+      ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      msg.textContent = ok ? "Tersalin." : "Salin manual: " + lastText;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lastText).then(function () { msg.textContent = "Tersalin."; }, fallback);
+    } else { fallback(); }
+  });
+
+  buildMeter($("introMeter"), 3);
+  showPrev();
+})();
+</script>
+</body></html>
