@@ -1,90 +1,109 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Spark Check</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Figtree:wght@400;500;600&display=swap">
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Spark Check | @tanjungbara30</title><meta name="description" content="Cek sparks lo lagi di mana, lengkap dengan rencana 7 hari. Gratis, 3 menit."><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Figtree:wght@400;500;600;700&display=swap"></head><body>
 <style>
-/* Layout: satu kolom sempit (maks 560px). Kuis satu pernyataan per layar. Hasil = kartu poster (angka sparks, meter, radar 4 pola) lalu tipe, peta pola, rencana 7 hari, ajakan teman senasib. Dark-first sesuai palet akun. */
+/* Layout: satu kolom (maks 500px) ala funnel onboarding. Header: tombol kembali, judul kecil, progres 3 segmen. Konten rata kiri, kartu pilihan putih, tombol Lanjut menempel di bawah. Hasil = kartu poster lalu detail. Terang default, gelap mengikuti sistem. */
 :root {
-  --bg: #1D2025;
-  --surface: #272B32;
-  --fg: #F3F1EC;
-  --muted: #AEA9A0;
-  --line: #3B4049;
+  --bg: #F3F1EC;
+  --surface: #FFFFFF;
+  --fg: #1D2025;
+  --muted: #5E5A53;
+  --line: #E3DFD5;
+  --tint: #FFF1D9;
   --accent: #FF9F1C;
-  --accent-ink: #FF9F1C;
+  --accent-ink: #8A4F00;
   --on-accent: #1D2025;
+  --shadow: 0 1px 2px rgba(29,32,37,.05), 0 6px 18px rgba(29,32,37,.05);
   --font-display: "Archivo", "Arial Black", Arial, sans-serif;
   --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
-  color-scheme: dark;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #F3F1EC; --surface: #FBFAF7; --fg: #1D2025; --muted: #5E5A53; --line: #D8D3C8;
-    --accent: #FF9F1C; --accent-ink: #8A4F00; --on-accent: #1D2025; color-scheme: light;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1D2025; --surface: #272B32; --fg: #F3F1EC; --muted: #AEA9A0; --line: #3B4049;
+    --tint: #3A3022; --accent-ink: #FF9F1C; --shadow: none; color-scheme: dark;
   }
 }
-:root[data-theme="light"] {
-  --bg: #F3F1EC; --surface: #FBFAF7; --fg: #1D2025; --muted: #5E5A53; --line: #D8D3C8;
-  --accent: #FF9F1C; --accent-ink: #8A4F00; --on-accent: #1D2025; color-scheme: light;
+:root[data-theme="dark"] {
+  --bg: #1D2025; --surface: #272B32; --fg: #F3F1EC; --muted: #AEA9A0; --line: #3B4049;
+  --tint: #3A3022; --accent-ink: #FF9F1C; --shadow: none; color-scheme: dark;
 }
 * { box-sizing: border-box; }
-body {
-  background: var(--bg); color: var(--fg);
-  font-family: var(--font-body); font-size: 17px; line-height: 1.55;
-  padding-block: 24px 56px;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-}
-main { max-width: 560px; margin: 0 auto; }
-h1, h2, h3 { font-family: var(--font-display); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 17px; line-height: 1.5; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.12; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
 p { margin: 0; }
-.handle { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+[hidden] { display: none !important; }
+
+.shell { max-width: 500px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+
+/* header */
+.topbar { padding: 14px max(16px, env(safe-area-inset-right, 0px)) 6px max(16px, env(safe-area-inset-left, 0px)); padding-top: max(14px, env(safe-area-inset-top, 0px)); display: flex; flex-direction: column; gap: 12px; }
+.top-row { display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; }
+.top-title { text-align: center; font: 800 12px var(--font-display); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.iconbtn { width: 40px; height: 40px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--surface); color: var(--fg); display: grid; place-items: center; cursor: pointer; padding: 0; }
+.iconbtn:hover { border-color: var(--muted); }
+.iconbtn svg { width: 18px; height: 18px; }
+.top-row .ph { width: 40px; height: 40px; }
+.tracks { display: grid; grid-template-columns: 2fr 6fr 2fr; gap: 6px; }
+.tracks b { display: block; height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.tracks b i { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width .25s ease; }
+
+/* konten */
+main { flex: 1 0 auto; padding: 20px max(20px, env(safe-area-inset-right, 0px)) 120px max(20px, env(safe-area-inset-left, 0px)); }
 .stack { display: flex; flex-direction: column; gap: 22px; }
+.handle { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.lede { color: var(--muted); }
+.meta { font-size: 14px; color: var(--muted); }
+.qnum { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+.q { font-size: clamp(26px, 7.4vw, 32px); }
+.qsub { color: var(--muted); font-size: 16px; font-weight: 500; }
+.qhead { display: flex; flex-direction: column; gap: 10px; }
+
+/* intro */
+.hero h1 { font-size: clamp(46px, 14vw, 68px); font-weight: 900; }
+.hero h1 span { color: var(--accent-ink); }
 .meter { display: flex; gap: 5px; align-items: flex-end; height: 56px; }
 .meter i { flex: 1; min-width: 0; border-radius: 3px; background: var(--line); height: 100%; }
 .meter i:nth-child(1) { height: 30%; } .meter i:nth-child(2) { height: 38%; } .meter i:nth-child(3) { height: 46%; }
 .meter i:nth-child(4) { height: 54%; } .meter i:nth-child(5) { height: 62%; } .meter i:nth-child(6) { height: 70%; }
 .meter i:nth-child(7) { height: 78%; } .meter i:nth-child(8) { height: 86%; } .meter i:nth-child(9) { height: 93%; } .meter i:nth-child(10) { height: 100%; }
 .meter i.on { background: var(--accent); }
-.hero h1 { font-size: clamp(44px, 14vw, 72px); }
-.hero h1 span { color: var(--accent-ink); }
-.lede { color: var(--muted); }
 .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.facts div { border-top: 2px solid var(--line); padding-top: 10px; font-size: 14px; color: var(--muted); }
-.facts b { display: block; font: 900 26px/1 var(--font-display); color: var(--fg); margin-bottom: 4px; font-variant-numeric: tabular-nums; }
-.btn {
-  font: 800 17px/1.1 var(--font-display); letter-spacing: 0.01em;
-  background: var(--accent); color: var(--on-accent); border: 0; border-radius: 10px;
-  padding: 17px 22px; cursor: pointer; text-align: center; text-decoration: none; display: inline-block;
-}
-.btn:hover { filter: brightness(1.06); }
+.facts div { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px 12px; font-size: 13px; line-height: 1.25; color: var(--muted); box-shadow: var(--shadow); }
+.facts b { display: block; font: 900 28px/1 var(--font-display); color: var(--fg); margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+
+/* pilihan */
+.opts { display: flex; flex-direction: column; gap: 10px; }
+.opts.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.opt { position: relative; text-align: left; font: 600 17px/1.3 var(--font-body); color: var(--fg); background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px; padding: 16px 52px 16px 18px; cursor: pointer; width: 100%; box-shadow: var(--shadow); transition: border-color .15s, background .15s; }
+.opt:hover { border-color: var(--muted); }
+.opt .ind { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; color: transparent; font: 900 13px var(--font-display); background: var(--surface); }
+.opt[aria-checked="true"] { border-color: var(--accent); background: var(--tint); }
+.opt[aria-checked="true"] .ind { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.opts.grid .opt { padding: 0; display: flex; flex-direction: column; overflow: hidden; min-height: 132px; }
+.opts.grid .ico { height: 64px; display: grid; place-items: center; background: var(--tint); color: var(--accent-ink); border-bottom: 1px solid var(--line); }
+.opts.grid .ico svg { width: 30px; height: 30px; }
+.opts.grid .lab { padding: 12px 14px 14px; font-size: 16px; line-height: 1.25; }
+.opts.grid .ind { right: 10px; top: 10px; transform: none; width: 22px; height: 22px; }
+
+/* tombol */
+.btn { font: 800 17px/1.1 var(--font-display); letter-spacing: 0.01em; background: var(--accent); color: var(--on-accent); border: 0; border-radius: 14px; padding: 18px 22px; min-height: 56px; cursor: pointer; text-align: center; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+.btn:hover { filter: brightness(1.05); }
+.btn:disabled { opacity: .4; cursor: not-allowed; filter: none; }
 .btn.ghost { background: transparent; color: var(--fg); border: 1.5px solid var(--line); }
 .btn.ghost:hover { border-color: var(--muted); }
-.btn:focus-visible, .opt:focus-visible, .link:focus-visible, .chk input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 3px; }
-.meta { font-size: 14px; color: var(--muted); }
-.progress { display: flex; gap: 3px; }
-.progress b { flex: 1; min-width: 0; height: 5px; border-radius: 3px; background: var(--line); }
-.progress b.done { background: var(--accent); }
-.qnum { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
-.q { font-size: clamp(25px, 7vw, 32px); }
-.opts { display: flex; flex-direction: column; gap: 10px; }
-.opt {
-  text-align: left; font: 500 17px/1.3 var(--font-body); color: var(--fg);
-  background: var(--surface); border: 1.5px solid var(--line); border-radius: 10px;
-  padding: 16px 18px; cursor: pointer; width: 100%;
-}
-.opt:hover { border-color: var(--muted); }
-.opt[aria-checked="true"] { border-color: var(--accent); box-shadow: inset 4px 0 0 var(--accent); }
-.link { background: none; border: 0; color: var(--muted); font: 600 15px var(--font-body); cursor: pointer; padding: 6px 0; text-align: left; text-decoration: underline; text-underline-offset: 3px; width: fit-content; }
+.btn:focus-visible, .opt:focus-visible, .iconbtn:focus-visible, .chk input:focus-visible + .box { outline: 3px solid var(--accent); outline-offset: 3px; }
+.footbar { position: sticky; bottom: 0; z-index: 10; padding: 28px max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); background: linear-gradient(180deg, transparent 0%, var(--bg) 38%, var(--bg) 100%); margin-top: -104px; pointer-events: none; }
+.footbar .btn { width: 100%; pointer-events: auto; }
 
 /* kartu poster hasil */
-.poster { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 14px; }
-.poster .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.poster { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 14px; box-shadow: var(--shadow); }
+.poster .top2 { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .score { display: flex; align-items: flex-end; gap: 14px; }
 .score .num { font: 900 clamp(64px, 20vw, 92px)/0.85 var(--font-display); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
 .score .num small { font-size: 0.32em; color: var(--muted); letter-spacing: 0; margin-left: 4px; }
 .score .meter { flex: 1; min-width: 0; height: 64px; }
 .lvl { font: 900 14px var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); }
-.poster h2 { font-size: clamp(34px, 10vw, 48px); }
+.poster h2 { font-size: clamp(34px, 10vw, 48px); font-weight: 900; }
 .radar { width: 100%; height: auto; display: block; }
 .radar .ring { fill: none; stroke: var(--line); stroke-width: 1; }
 .radar .axis { stroke: var(--line); stroke-width: 1; }
@@ -95,7 +114,7 @@ p { margin: 0; }
 .poster .foot { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
 .shot { font-size: 14px; color: var(--muted); }
 
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); }
 .card h3 { font-size: 21px; letter-spacing: -0.01em; }
 .card ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
 .sec h3 { font-size: 26px; margin-bottom: 4px; }
@@ -113,11 +132,10 @@ p { margin: 0; }
 
 /* rencana 7 hari */
 .plan { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.chk { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 13px 14px; cursor: pointer; }
+.chk { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; cursor: pointer; box-shadow: var(--shadow); }
 .chk input { position: absolute; opacity: 0; pointer-events: none; }
-.chk .box { width: 24px; height: 24px; border: 2px solid var(--muted); border-radius: 6px; display: grid; place-items: center; font: 900 15px var(--font-display); color: transparent; margin-top: 1px; }
+.chk .box { width: 24px; height: 24px; border: 2px solid var(--muted); border-radius: 7px; display: grid; place-items: center; font: 900 15px var(--font-display); color: transparent; margin-top: 1px; }
 .chk input:checked + .box { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-.chk input:focus-visible + .box { outline: 3px solid var(--accent); outline-offset: 2px; }
 .chk .day { font: 800 12px var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); display: block; }
 .chk input:checked ~ .txt { color: var(--muted); }
 .chk input:checked ~ .txt .day { color: var(--muted); }
@@ -127,120 +145,134 @@ p { margin: 0; }
 .prog span { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* ajakan teman senasib */
-.join { background: var(--accent); color: var(--on-accent); border-radius: 16px; padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; }
-.join h3 { font-size: clamp(28px, 8.5vw, 38px); }
+.join { background: var(--accent); color: var(--on-accent); border-radius: 20px; padding: 24px 22px; display: flex; flex-direction: column; gap: 14px; }
+.join h3 { font-size: clamp(28px, 8.5vw, 38px); font-weight: 900; }
 .join ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
-.join .btn { background: var(--on-accent); color: var(--fg); }
+.join .btn { background: #1D2025; color: #F3F1EC; }
 .join .meta { color: var(--on-accent); opacity: 0.8; }
-:root[data-theme="light"] .join .btn, :root:not([data-theme="dark"]) .join .btn { color: #F3F1EC; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.actions .btn { flex: 1 1 180px; }
 .note { font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
-<main id="app">
-  <!-- INTRO -->
-  <section id="intro" class="stack hero">
-    <p class="handle">@tanjungbara30</p>
-    <div class="meter" id="introMeter" aria-hidden="true"></div>
-    <h1>Spark <span>Check</span></h1>
-    <p>Gue pernah bengong hampir setahun: tidur, scroll, otak tumpul, nggak ada gairah. Cek ini gue bikin buat lo yang lagi ngerasa hal serupa.</p>
-    <div class="facts">
-      <div><b>20</b>pernyataan</div>
-      <div><b>4</b>pola sparks</div>
-      <div><b>7</b>hari langkah kecil</div>
+<div class="shell" id="shell">
+  <header class="topbar" id="topbar">
+    <div class="top-row">
+      <button class="iconbtn" id="back" type="button" aria-label="Sebelumnya" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+      <span class="ph" id="backPh"></span>
+      <span class="top-title">Spark Check</span>
+      <span class="ph"></span>
     </div>
-    <p class="lede">Sekitar 3 menit. Jawab sesuai sebulan terakhir, bukan sesuai yang seharusnya. Jawaban lo nggak dikirim ke mana pun. Hasilnya cuma disimpan di browser lo, supaya bisa dibandingin pas cek ulang.</p>
-    <div><button class="btn" id="start" type="button">Mulai cek sparks</button></div>
-    <p id="prevHint" class="meta" hidden></p>
-  </section>
+    <div class="tracks" id="tracks" aria-hidden="true" hidden><b><i></i></b><b><i></i></b><b><i></i></b></div>
+  </header>
 
-  <!-- PERTANYAAN -->
-  <section id="quiz" class="stack" hidden>
-    <div class="progress" id="progress" aria-hidden="true"></div>
-    <p class="qnum" id="qnum" aria-live="polite"></p>
-    <h2 class="q" id="qtext"></h2>
-    <div class="opts" id="opts" role="radiogroup" aria-labelledby="qtext"></div>
-    <button class="link" id="back" type="button">← Sebelumnya</button>
-  </section>
-
-  <!-- HASIL -->
-  <section id="result" class="stack" hidden>
-    <article class="poster" id="poster">
-      <div class="top"><span class="handle">Spark Check</span><span class="handle" id="posterDate"></span></div>
-      <div class="score">
-        <div class="num"><span id="scoreNum">0</span><small>/100</small></div>
-        <div class="meter" id="resMeter" aria-hidden="true"></div>
+  <main id="app">
+    <!-- INTRO -->
+    <section id="intro" class="stack hero">
+      <p class="handle">@tanjungbara30</p>
+      <div class="meter" id="introMeter" aria-hidden="true"></div>
+      <h1>Spark <span>Check</span></h1>
+      <p>Lagi ngerasa datar, capek, atau nggak tahu mau ke mana? Gue pernah kayak gitu hampir setahun. Cek singkat ini bantu lo lihat sparks lo lagi di mana dan mulai dari mana.</p>
+      <div class="facts">
+        <div><b>20</b>pernyataan</div>
+        <div><b>4</b>pola sparks</div>
+        <div><b>7</b>hari rencana</div>
       </div>
-      <p class="lvl" id="levelLabel"></p>
-      <h2 id="typeName"></h2>
-      <p class="lede" id="typeShort"></p>
-      <svg class="radar" id="radar" viewBox="0 0 360 290" role="img" aria-label="Grafik radar empat pola sparks"></svg>
-      <div class="foot"><span>@tanjungbara30</span><span>Cek sparks lo juga</span></div>
-    </article>
-    <p class="shot">Screenshot kartu di atas, taruh di story, dan tag <b>@tanjungbara30</b>. Gue bakal repost.</p>
-    <div class="actions">
-      <a class="btn wa" href="#" target="_blank" rel="noopener" hidden>Gabung teman senasib</a>
-      <button class="btn ghost" id="copy" type="button">Salin hasil</button>
-    </div>
-    <p class="meta" id="copyMsg" role="status"></p>
+      <p class="lede">Sekitar 3 menit. Jawab sesuai kondisi lo sebulan terakhir, bukan yang lo harapkan. Jawaban nggak dikirim ke mana pun. Hasil cuma disimpan di browser lo, jadi bisa dibandingin kalau lo cek ulang.</p>
+      <p id="prevHint" class="meta" hidden></p>
+    </section>
 
-    <div class="sec stack" style="gap:12px">
-      <h3 id="typeTitle"></h3>
-      <p id="typeLine"></p>
-      <p class="meta" id="levelNote"></p>
-    </div>
+    <!-- PERTANYAAN -->
+    <section id="quiz" class="stack" hidden>
+      <div class="qhead">
+        <p class="qnum" id="qnum" aria-live="polite"></p>
+        <h2 class="q" id="qtext"></h2>
+        <p class="qsub" id="qsub"></p>
+      </div>
+      <div class="opts" id="opts" role="radiogroup" aria-labelledby="qtext"></div>
+    </section>
 
-    <div class="two">
-      <div class="card"><h3>Tanda-tandanya</h3><ul id="signs"></ul></div>
-      <div class="card"><h3>Yang sering terjadi</h3><p id="why"></p></div>
-    </div>
-    <div class="card"><h3>Biasanya malah bikin makin redup</h3><ul class="dont" id="dont"></ul></div>
+    <!-- HASIL -->
+    <section id="result" class="stack" hidden>
+      <article class="poster" id="poster">
+        <div class="top2"><span class="handle">Spark Check</span><span class="handle" id="posterDate"></span></div>
+        <div class="score">
+          <div class="num"><span id="scoreNum">0</span><small>/100</small></div>
+          <div class="meter" id="resMeter" aria-hidden="true"></div>
+        </div>
+        <p class="lvl" id="levelLabel"></p>
+        <h2 id="typeName"></h2>
+        <p class="lede" id="typeShort"></p>
+        <svg class="radar" id="radar" viewBox="-24 0 408 290" role="img" aria-label="Grafik radar empat pola sparks"></svg>
+        <div class="foot"><span>@tanjungbara30</span><span>Cek sparks lo juga</span></div>
+      </article>
+      <p class="shot">Screenshot kartu di atas, taruh di story, dan tag <b>@tanjungbara30</b>. Gue bakal repost.</p>
+      <div class="actions">
+        <a class="btn wa" href="#" target="_blank" rel="noopener" hidden>Gabung teman senasib</a>
+        <button class="btn ghost" id="copy" type="button">Salin hasil</button>
+      </div>
+      <p class="meta" id="copyMsg" role="status"></p>
 
-    <div class="card">
-      <h3>Peta 4 pola lo</h3>
-      <div class="bars" id="bars"></div>
-      <p class="meta" id="mixNote"></p>
-    </div>
+      <div class="sec stack" style="gap:12px">
+        <h3 id="typeTitle"></h3>
+        <p id="typeLine"></p>
+        <p class="meta" id="levelNote"></p>
+      </div>
 
-    <div class="card" id="ctxCard">
-      <h3>Buat posisi lo sekarang</h3>
-      <p id="ctxLine"></p>
-      <p id="focusLine"></p>
-    </div>
+      <div class="two">
+        <div class="card"><h3>Tanda-tandanya</h3><ul id="signs"></ul></div>
+        <div class="card"><h3>Yang sering terjadi</h3><p id="why"></p></div>
+      </div>
+      <div class="card"><h3>Yang malah bikin makin redup</h3><ul class="dont" id="dont"></ul></div>
 
-    <div class="sec stack" style="gap:12px">
-      <h3>Rencana 7 hari</h3>
-      <p class="meta">Satu langkah kecil per hari, maksimal 15 menit. Centang yang sudah lo kerjain. Progresnya tersimpan di browser lo.</p>
-      <div class="prog"><div class="track"><div class="fill" id="planFill"></div></div><span id="planCount"></span></div>
-      <ul class="plan" id="plan"></ul>
-    </div>
+      <div class="card">
+        <h3>Peta 4 pola lo</h3>
+        <div class="bars" id="bars"></div>
+        <p class="meta" id="mixNote"></p>
+      </div>
 
-    <article class="join">
-      <p class="handle" style="color:inherit;opacity:.8">Jangan nyalain sendirian</p>
-      <h3>Nyalain lagi Spark lo bareng teman senasib.</h3>
-      <p>Sparks gue nggak balik karena motivasi. Baliknya pelan, dan salah satu yang bantu adalah tahu gue nggak sendirian. Lo juga nggak.</p>
-      <ul>
-        <li>Langkah kecil yang bisa langsung dicoba</li>
-        <li>Cerita jujur dari proses gue mulai lagi</li>
-        <li>Kabar Spark Check berikutnya dan materi lanjutan</li>
-      </ul>
-      <a class="btn wa" href="#" target="_blank" rel="noopener" hidden>Gabung komunitas WhatsApp</a>
-      <p class="meta wa-soon" hidden>Link komunitas segera dibuka. Follow @tanjungbara30 dulu supaya nggak ketinggalan.</p>
-    </article>
+      <div class="card" id="ctxCard">
+        <h3>Sesuai posisi lo sekarang</h3>
+        <p id="ctxLine"></p>
+        <p id="focusLine"></p>
+      </div>
 
-    <div class="card delta" id="deltaCard" hidden>
-      <h3>Dibanding cek sebelumnya</h3>
-      <p id="deltaLine"></p>
-    </div>
+      <div class="sec stack" style="gap:12px">
+        <h3>Rencana 7 hari</h3>
+        <p class="meta">Satu langkah kecil per hari, maksimal 15 menit. Centang yang udah lo kerjain. Progresnya tersimpan di browser lo.</p>
+        <div class="prog"><div class="track"><div class="fill" id="planFill"></div></div><span id="planCount"></span></div>
+        <ul class="plan" id="plan"></ul>
+      </div>
 
-    <div class="actions">
-      <button class="btn ghost" id="again" type="button">Ulangi cek</button>
-    </div>
-    <p class="meta" id="recheck"></p>
-    <p class="note">Ini cermin singkat, bukan diagnosis. Kalau rasa kosongnya makin berat atau mengganggu keseharian, ngobrol ke orang yang lo percaya atau tenaga profesional itu langkah yang masuk akal.</p>
-  </section>
-</main>
+      <article class="join">
+        <p class="handle" style="color:inherit;opacity:.8">Jangan nyalain sendirian</p>
+        <h3>Nyalain lagi Spark lo bareng teman senasib.</h3>
+        <p>Sparks gue balik bukan karena motivasi, tapi pelan-pelan. Salah satu yang bantu adalah tahu kalau gue nggak sendirian. Lo juga nggak.</p>
+        <ul>
+          <li>Langkah kecil yang bisa langsung dicoba</li>
+          <li>Cerita jujur dari proses gue mulai lagi</li>
+          <li>Kabar Spark Check berikutnya dan materi lanjutan</li>
+        </ul>
+        <a class="btn wa" href="#" target="_blank" rel="noopener" hidden>Gabung komunitas WhatsApp</a>
+        <p class="meta wa-soon" hidden>Link komunitas segera dibuka. Follow @tanjungbara30 dulu supaya nggak ketinggalan.</p>
+      </article>
+
+      <div class="card delta" id="deltaCard" hidden>
+        <h3>Dibanding cek sebelumnya</h3>
+        <p id="deltaLine"></p>
+      </div>
+
+      <div class="actions">
+        <button class="btn ghost" id="again" type="button">Ulangi cek</button>
+      </div>
+      <p class="meta" id="recheck"></p>
+      <p class="note">Ini cek singkat, bukan diagnosis. Kalau rasa kosongnya makin berat atau mengganggu keseharian, ngobrol ke orang yang lo percaya atau ke tenaga profesional.</p>
+    </section>
+  </main>
+
+  <div class="footbar" id="footbar"><button class="btn" id="next" type="button">Mulai cek sparks</button></div>
+</div>
 
 <script>
 (function () {
@@ -256,21 +288,21 @@ p { margin: 0; }
 
   var PROFILE = [
     {
-      key: "posisi", t: "Sekarang lo lagi di posisi yang mana?",
+      key: "posisi", t: "Posisi kerja lo sekarang yang mana?",
       opts: [
-        { label: "Karyawan", ctx: "Sebagai karyawan, sparks sering hilang bukan karena kerjaannya jelek, tapi karena lo nggak lagi ngerasa tumbuh. Cek bagian mana dari kerjaan lo yang masih bikin lo penasaran, sekecil apa pun." },
-        { label: "Punya usaha sendiri", ctx: "Sebagai pemilik usaha, lo terbiasa jadi mesin penggerak semua orang, jadi baterai sendiri sering paling akhir diurus. Perlakukan jadwal istirahat lo seperti jadwal supplier: nggak boleh dilewat." },
-        { label: "Lagi transisi atau nyari arah", ctx: "Di fase transisi, ketidakpastian itu sendiri yang nguras tenaga. Pecah targetnya jadi langkah mingguan, jangan satu lompatan besar." },
-        { label: "Freelance atau lainnya", ctx: "Kerja mandiri bikin batas hari dan malam kabur. Pasang jam selesai yang tegas dan jaga seperti janji ke klien." }
+        { label: "Karyawan", ctx: "Sebagai karyawan, semangat sering hilang bukan karena kerjaannya jelek, tapi karena lo nggak ngerasa berkembang lagi. Cari satu bagian kerjaan yang masih bikin lo penasaran, sekecil apa pun." },
+        { label: "Punya usaha sendiri", ctx: "Sebagai pemilik usaha, lo biasa mengurus semua orang duluan, jadi diri sendiri sering paling akhir. Perlakukan jadwal istirahat lo seperti jadwal supplier: nggak boleh dilewat." },
+        { label: "Lagi pindah jalur atau nyari arah", ctx: "Di masa transisi, rasa nggak pasti itu sendiri yang bikin capek. Bagi targetnya jadi langkah per minggu, jangan satu lompatan besar." },
+        { label: "Freelance atau lainnya", ctx: "Kerja mandiri bikin batas antara jam kerja dan istirahat jadi kabur. Tentukan jam selesai yang jelas dan tepati seperti janji ke klien." }
       ]
     },
     {
-      key: "fokus", t: "Apa yang paling pengin lo nyalakan lagi?",
+      key: "fokus", t: "Apa yang paling pengin lo balikin?",
       opts: [
-        { label: "Semangat kerja", focus: "Fokus 7 hari lo: cari satu bagian kerjaan yang masih bikin lo penasaran, dan kasih jatah waktu khusus buat itu." },
-        { label: "Hobi dan diri sendiri", focus: "Fokus 7 hari lo: balikin satu hal yang cuma buat lo, tanpa target dan tanpa harus ada hasilnya." },
-        { label: "Pertemanan dan kedekatan", focus: "Fokus 7 hari lo: satu kontak tulus per hari lebih kuat daripada satu acara besar sebulan sekali." },
-        { label: "Arah hidup", focus: "Fokus 7 hari lo: jangan cari jawaban besar dulu. Kumpulin tiga petunjuk kecil tentang hal yang bikin lo tertarik." }
+        { label: "Semangat kerja", focus: "Fokus 7 hari lo: pilih satu bagian kerjaan yang masih bikin lo penasaran, dan sisihkan waktu khusus buat itu." },
+        { label: "Hobi dan waktu buat diri sendiri", focus: "Fokus 7 hari lo: lakuin satu hal yang cuma buat lo, tanpa target dan tanpa harus ada hasilnya." },
+        { label: "Pertemanan", focus: "Fokus 7 hari lo: hubungi satu orang tiap hari dengan tulus. Itu lebih berguna daripada satu acara besar sebulan sekali." },
+        { label: "Arah hidup", focus: "Fokus 7 hari lo: jangan cari jawaban besar dulu. Catat tiga hal kecil yang bikin lo tertarik." }
       ]
     }
   ];
@@ -278,32 +310,32 @@ p { margin: 0; }
   // d: 0 hening, 1 tekor, 2 muter, 3 sendiri
   var BY_DIM = [
     [
-      "Gue bangun, jalanin hari, dan nggak ngerasa apa-apa. Nggak sedih, nggak senang.",
-      "Hal yang dulu bikin gue semangat sekarang rasanya biasa aja.",
-      "Ditanya \"gimana kabar?\", gue jawab \"aman\". Padahal gue sendiri nggak yakin.",
-      "Gue scroll HP lama banget tanpa tujuan, lalu nyesel.",
-      "Gue susah ngebayangin hal yang bikin gue nggak sabar nunggu minggu depan."
+      "Hari-hari gue lewat gitu aja, dan gue nggak ngerasain apa-apa, bahkan buat hal yang dulu gue suka.",
+      "Gue susah bedain hari ini sama kemarin, karena semuanya terasa sama.",
+      "Pas ditanya kabar, gue jawab \"aman\" padahal gue sendiri nggak tahu kabar gue gimana.",
+      "Gue scroll HP berjam-jam tanpa tujuan, lalu nyesel.",
+      "Gue nggak punya hal yang gue tunggu-tunggu dalam waktu dekat."
     ],
     [
-      "Jadwal gue padat, tapi hati rasanya kosong.",
+      "Jadwal gue padat, tapi gue nggak ngerasa dapat apa-apa dari semua itu.",
       "Tidur cukup, tapi bangun tetap capek.",
       "Gue bersyukur sama hidup gue, tapi tetap ngerasa ada yang kurang.",
-      "Libur sehari nggak bikin gue benar-benar pulih.",
-      "Hal kecil (chat masuk, pertanyaan orang, deadline) gampang bikin gue lelah."
+      "Libur sehari pun nggak bikin gue ngerasa pulih.",
+      "Hal kecil kayak chat masuk atau deadline gampang bikin gue lelah."
     ],
     [
       "Gue sadar pengin ganti arah, tapi bingung mulai dari mana.",
       "Gue mikir, \"Udah telat nggak sih mulai lagi di umur segini?\"",
-      "Gue ngebandingin diri sama temen seumuran yang kelihatannya udah jauh di depan.",
-      "Gue nyimpen satu keinginan lama yang belum berani gue jalanin.",
-      "Gue kepikiran resign atau banting setir, tapi takut sama risikonya."
+      "Gue ngebandingin diri sama temen seumuran yang kelihatannya udah jauh lebih maju.",
+      "Gue punya satu keinginan lama yang belum berani gue jalanin.",
+      "Gue kepikiran resign atau ganti karier, tapi takut sama risikonya."
     ],
     [
-      "Grup WA yang dulu ramai sekarang sepi, dan gue nggak tahu mau mulai ngobrol dari mana.",
+      "Grup WA yang dulu ramai sekarang sepi, dan gue bingung mau mulai ngobrol dari mana.",
       "Gue lebih sering nunggu diajak daripada ngajak duluan.",
-      "Gue pengin cerita, tapi nggak nemu orang yang bakal ngerti tanpa ngasih nasihat.",
-      "Tiap kumpul, obrolannya terasa makin dangkal atau makin jarang nyambung.",
-      "Gue ngerasa sendirian di fase ini, seolah cuma gue yang begini."
+      "Gue pengin cerita, tapi nggak ada orang yang bisa dengerin tanpa langsung ngasih nasihat.",
+      "Tiap kumpul, obrolannya makin dangkal atau makin jarang nyambung.",
+      "Gue ngerasa sendirian di fase ini, kayak cuma gue yang begini."
     ]
   ];
 
@@ -315,74 +347,74 @@ p { margin: 0; }
   var TYPES = [
     {
       name: "Mode Hening", short: "Hening", full: "Mode Hening",
-      line: "Bukan sedih, bukan senang. Rasanya datar, seperti hidup jalan tapi lo cuma ikut.",
-      why: "Setelah lama dipaksa kuat atau sibuk, banyak orang ngerasa datar. Bukan berarti lo rusak, sering kali itu tanda lo kelamaan jalan tanpa ngecek apa yang masih bikin lo bereaksi.",
-      signs: ["Hari berlalu tapi nggak ada yang terasa menyala.", "Hal yang dulu seru jadi biasa aja.", "\"Aman\" keluar otomatis, tanpa dicek benar atau nggak."],
-      dont: ["Maksa diri harus semangat sekarang juga.", "Nambah hiburan pasif sampai larut malam."],
+      line: "Lo jalanin hari seperti biasa, tapi nggak ada yang terasa. Hal yang dulu lo suka sekarang biasa aja.",
+      why: "Setelah lama sibuk atau harus kelihatan kuat, banyak orang jadi ngerasa datar. Itu bukan berarti lo rusak. Sering kali artinya lo udah lama jalan tanpa ngecek apa yang masih bikin lo tertarik.",
+      signs: ["Hari berlalu, tapi nggak ada yang terasa.", "Hal yang dulu lo suka sekarang biasa aja.", "Lo jawab \"aman\" otomatis tanpa mikir."],
+      dont: ["Memaksa diri langsung semangat.", "Nonton atau scroll sampai larut malam."],
       plan: [
-        "Catat 3 hal yang lo rasain hari ini, sekecil apa pun (ngantuk, lapar, kesal). Ini latihan ngenalin sinyal.",
+        "Catat 3 hal yang lo rasain hari ini, sekecil apa pun (ngantuk, lapar, kesal). Ini latihan buat mengenali perasaan lo.",
         "Jalan kaki 15 menit tanpa headphone.",
         "Dengerin satu lagu lama yang dulu lo suka sampai habis, tanpa buka HP.",
-        "Kerjain 15 menit satu hal yang dulu bikin lo nyala (gambar, main, masak, apa saja).",
+        "Kerjain 15 menit satu hal yang dulu lo suka (gambar, main musik, masak, apa saja).",
         "Taruh HP di luar jangkauan 1 jam sebelum tidur.",
-        "Tulis satu kalimat: hari ini apa yang paling nggak terasa membosankan?",
+        "Tulis satu kalimat: hari ini apa yang paling nggak ngebosenin?",
         "Bilang ke satu orang: \"Akhir-akhir ini gue lagi datar.\""
       ]
     },
     {
       name: "Baterai Tekor", short: "Tekor", full: "Baterai Tekor",
-      line: "Capek yang bukan capek badan. Jadwal penuh, tapi isinya nggak ngisi ulang lo.",
-      why: "Kalau kegiatan lo lebih banyak nguras daripada ngisi, istirahat doang nggak cukup. Yang perlu diubah komposisi harinya, bukan cuma jam tidurnya.",
-      signs: ["Istirahat ada, pulih nggak.", "Bersyukur, tapi tetap kosong.", "Hal kecil gampang bikin lelah."],
-      dont: ["Nambah target biar kelihatan produktif.", "Mikir \"orang lain lebih berat dari gue\" lalu nggak ngasih jeda."],
+      line: "Lo capek, tapi bukan cuma capek badan. Jadwal penuh, tapi kegiatannya lebih banyak nguras daripada ngisi tenaga lo.",
+      why: "Kalau kegiatan lo lebih banyak nguras daripada ngisi tenaga, istirahat aja nggak cukup. Yang perlu diubah adalah isi harinya, bukan cuma jam tidurnya.",
+      signs: ["Udah istirahat, tapi tetap nggak pulih.", "Bersyukur, tapi tetap ngerasa kurang.", "Hal kecil gampang bikin lo lelah."],
+      dont: ["Nambah target biar kelihatan produktif.", "Mikir \"orang lain lebih berat dari gue\", lalu nggak istirahat."],
       plan: [
         "Coret satu hal dari daftar minggu ini yang sebenarnya nggak harus lo kerjain.",
         "Satu jam tanpa layar dan tanpa notifikasi.",
         "Tidur 30 menit lebih awal dari biasanya.",
         "Bilang \"nanti ya\" ke satu permintaan yang nggak mendesak.",
         "Makan siang tanpa kerja dan tanpa layar.",
-        "Tulis 3 hal yang paling nguras dan 3 yang paling ngisi lo. Besok kurangi satu yang nguras.",
-        "Jadwalin satu blok kosong minggu depan dan jaga seperti meeting penting."
+        "Tulis 3 hal yang paling nguras tenaga lo dan 3 yang paling ngisi. Besok kurangi satu yang nguras.",
+        "Sisihkan satu blok waktu kosong minggu depan dan jaga seperti meeting penting."
       ]
     },
     {
       name: "Muter-muter", short: "Muter", full: "Muter-muter",
-      line: "Lo tahu ada yang mau diubah, tapi jalannya belum kelihatan. Bukan telat, lagi muter.",
-      why: "Jeda sebelum mulai lagi sering terlihat seperti diam, padahal otak lo lagi ngitung risiko dan bandingin opsi. Yang bantu bukan jawaban besar, tapi eksperimen kecil yang murah.",
-      signs: ["Ada keinginan lama yang masih disimpan.", "Sering ngecek hidup orang lain dan ngerasa ketinggalan.", "\"Mulai dari mana?\" lebih berisik daripada jawabannya."],
-      dont: ["Nunggu yakin 100 persen baru bergerak.", "Ngebandingin start lo dengan hasil akhir orang lain."],
+      line: "Lo tahu ada yang mau diubah, tapi belum tahu mulai dari mana. Itu bukan telat, itu lagi mikir arah.",
+      why: "Jeda sebelum mulai lagi sering kelihatan seperti diam, padahal lo lagi menimbang risiko dan membandingkan pilihan. Yang membantu bukan jawaban besar, tapi percobaan kecil yang murah.",
+      signs: ["Ada keinginan lama yang masih disimpan.", "Sering ngecek hidup orang lain dan ngerasa ketinggalan.", "Lo terus mikir \"mulai dari mana?\" tanpa nemu jawabannya."],
+      dont: ["Nunggu yakin 100 persen baru mulai.", "Ngebandingin awal lo dengan hasil akhir orang lain."],
       plan: [
-        "Tulis 3 hal yang lo kuasai dan masih lo suka. Itu bekal yang ikut lo bawa.",
-        "Tulis satu kalimat ketakutan terbesar soal mulai lagi, lalu tulis kemungkinan terburuk yang realistis.",
+        "Tulis 3 hal yang lo kuasai dan masih lo suka. Itu modal yang lo bawa.",
+        "Tulis satu kalimat tentang ketakutan terbesar lo soal mulai lagi, lalu tulis kemungkinan terburuk yang realistis.",
         "Pilih satu orang yang sudah pindah jalur dan kirim pesan singkat minta ngobrol 15 menit.",
-        "Riset 20 menit satu bidang yang menarik, satu saja, bukan lima.",
+        "Cari tahu 20 menit soal satu bidang yang menarik buat lo. Satu saja, bukan lima.",
         "Ngobrol 15 menit dengan orang tadi, atau orang lain yang relevan.",
-        "Pilih satu eksperimen 2 minggu (kursus gratis, proyek mini, magang singkat).",
+        "Pilih satu percobaan selama 2 minggu (kursus gratis, proyek kecil, magang singkat).",
         "Tulis langkah pertama lo lengkap dengan tanggalnya."
       ]
     },
     {
       name: "Sendiri-sendiri", short: "Sendiri", full: "Sendiri-sendiri",
       line: "Teman makin sedikit, obrolan makin dangkal, dan lo nggak yakin siapa yang bisa diajak cerita.",
-      why: "Di usia 30-an lingkaran pertemanan menyusut itu umum: kerja, keluarga, pindah kota. Yang bikin berat adalah ngira cuma lo yang begini.",
-      signs: ["Grup lama sepi.", "Lo nunggu diajak, bukan ngajak.", "Pengin cerita, tapi nggak mau dinasihati."],
+      why: "Di usia 30-an, teman yang makin sedikit itu umum karena kerja, keluarga, atau pindah kota. Yang bikin berat adalah ngira cuma lo yang begini.",
+      signs: ["Grup lama sepi.", "Lo nunggu diajak, bukan ngajak duluan.", "Lo pengin cerita, tapi nggak mau langsung dinasihati."],
       dont: ["Nunggu orang lain ngajak duluan.", "Nyimpen semuanya sendiri sampai ngerasa nggak ada yang ngerti."],
       plan: [
         "Kirim chat \"lagi apa?\" ke satu teman lama, tanpa agenda.",
         "Tulis 3 nama orang yang bikin lo nyaman cerita.",
         "Ajak satu orang telepon atau ngopi 15 menit.",
-        "Balas satu story atau status orang dengan tulus, bukan emoji doang.",
+        "Balas satu story atau status teman dengan komentar yang tulus, bukan emoji doang.",
         "Cerita satu hal jujur ke satu orang, misalnya: \"Gue lagi nggak baik-baik aja.\"",
-        "Gabung satu komunitas kecil yang isinya orang seumuran, termasuk komunitas teman senasib di bawah.",
-        "Jadwalin pertemuan berikutnya, jangan cuma bilang \"nanti ya\"."
+        "Gabung satu komunitas kecil yang isinya orang seumuran, misalnya komunitas teman senasib di bawah.",
+        "Tentuin tanggal pertemuan berikutnya, jangan cuma bilang \"nanti ya\"."
       ]
     }
   ];
 
   var LEVELS = [
-    { min: 67, label: "Sparks masih nyala", note: "Lo masih punya nyala. Jaga dengan kebiasaan kecil, jangan nunggu sampai redup." },
-    { min: 34, label: "Sparks mulai redup", note: "Lo ada di zona tengah. Belum padam, tapi sudah waktunya ngasih perhatian." },
-    { min: 0, label: "Sparks redup banget", note: "Nyalanya kecil banget sekarang. Pelan-pelan aja, dan jangan jalanin ini sendirian." }
+    { min: 67, label: "Sparks masih nyala", note: "Sparks lo masih nyala. Jaga dengan kebiasaan kecil, jangan nunggu sampai redup." },
+    { min: 34, label: "Sparks mulai redup", note: "Sparks lo ada di tengah. Belum padam, tapi udah waktunya diperhatiin." },
+    { min: 0, label: "Sparks redup banget", note: "Sparks lo lagi kecil banget sekarang. Pelan-pelan aja, dan jangan jalanin ini sendirian." }
   ];
 
   var $ = function (id) { return document.getElementById(id); };
@@ -406,56 +438,100 @@ p { margin: 0; }
     }
   }
 
+  var state = "intro";
+  var ICONS = {
+    posisi: [
+      '<path d="M3 8h18v12H3zM9 8V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V8M3 13.5h18"/>',
+      '<path d="M4 9.5 5.2 4h13.6L20 9.5M4 9.5V20h16V9.5M4 9.5h16M10 20v-5h4v5"/>',
+      '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+      '<rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 20h20"/>'
+    ],
+    fokus: [
+      '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+      '<path d="M12 21s-7.5-4.6-9-9.5A5 5 0 0 1 12 8a5 5 0 0 1 9 3.5C19.5 16.4 12 21 12 21z"/>',
+      '<circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16.5 5.5a3 3 0 0 1 0 5.5M18 14.5a6 6 0 0 1 3 5.5"/>',
+      '<path d="M12 3v18M5 6h11l3 3-3 3H5z"/>'
+    ]
+  };
+  var CHECK = "✓";
+
   function show(id) {
+    state = id;
     ["intro", "quiz", "result"].forEach(function (s) { $(s).hidden = s !== id; });
+    $("tracks").hidden = id === "intro";
+    $("footbar").hidden = id === "result";
+    $("back").hidden = id !== "quiz";
+    $("backPh").hidden = id === "quiz";
+    if (id === "intro") { $("next").textContent = "Mulai cek sparks"; $("next").disabled = false; }
+    if (id === "result") setTracks(2, 20, 1);
     window.scrollTo(0, 0);
   }
 
+  // segmen: Kenalan (2), Cek sparks (20), Hasil
+  function setTracks(profileDone, scoredDone, resultFill) {
+    var f = $("tracks").querySelectorAll("i");
+    f[0].style.width = Math.round(profileDone / 2 * 100) + "%";
+    f[1].style.width = Math.round(scoredDone / N_SCORED * 100) + "%";
+    f[2].style.width = Math.round((resultFill || 0) * 100) + "%";
+  }
+
   function renderProgress() {
-    var p = $("progress"); p.textContent = "";
-    for (var i = 0; i < QUESTIONS.length; i++) {
-      var b = document.createElement("b");
-      if (i < idx) b.className = "done";
-      p.appendChild(b);
-    }
+    setTracks(Math.min(idx, PROFILE.length), Math.max(0, idx - PROFILE.length), 0);
   }
 
   function renderQuestion() {
     var q = QUESTIONS[idx];
     var wrap = $("opts"); wrap.textContent = "";
     renderProgress();
-    var list, text;
-    if (q.profile) {
+    var list, text, isProfile = !!q.profile;
+    if (isProfile) {
       $("qnum").textContent = "Kenalan dulu · " + (idx + 1) + " dari " + PROFILE.length;
       text = q.profile.t;
-      list = q.profile.opts.map(function (o, i) { return { label: o.label, v: i }; });
+      $("qsub").textContent = "Pilih satu yang paling pas.";
+      list = q.profile.opts.map(function (o, i) { return { label: o.label, v: i, icon: ICONS[q.profile.key][i] }; });
     } else {
       $("qnum").textContent = "Pernyataan " + (idx - PROFILE.length + 1) + " dari " + N_SCORED;
       text = q.t;
+      $("qsub").textContent = "Dalam sebulan terakhir, seberapa sering ini terjadi sama lo?";
       list = OPTIONS;
     }
     $("qtext").textContent = text;
+    wrap.className = isProfile ? "opts grid" : "opts";
     list.forEach(function (o) {
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "opt";
       btn.setAttribute("role", "radio");
       btn.setAttribute("aria-checked", answers[idx] === o.v ? "true" : "false");
-      btn.textContent = o.label;
+      if (o.icon) {
+        var ico = document.createElement("span"); ico.className = "ico"; ico.setAttribute("aria-hidden", "true");
+        ico.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + o.icon + '</svg>';
+        btn.appendChild(ico);
+      }
+      var lab = document.createElement("span"); lab.className = "lab"; lab.textContent = o.label;
+      btn.appendChild(lab);
+      var ind = document.createElement("span"); ind.className = "ind"; ind.setAttribute("aria-hidden", "true"); ind.textContent = CHECK;
+      btn.appendChild(ind);
       btn.addEventListener("click", function () { choose(o.v); });
       wrap.appendChild(btn);
     });
-    $("back").hidden = idx === 0;
+    var nx = $("next");
+    nx.textContent = idx === QUESTIONS.length - 1 ? "Lihat hasil" : "Lanjut";
+    nx.disabled = answers[idx] === undefined;
+  }
+
+  function advance() {
+    if (idx < QUESTIONS.length - 1) { idx++; renderQuestion(); window.scrollTo(0, 0); } else { finish(); }
   }
 
   function choose(v) {
     if (advanceTimer) return;
     answers[idx] = v;
     renderQuestion();
-    advanceTimer = setTimeout(function () {
-      advanceTimer = null;
-      if (idx < QUESTIONS.length - 1) { idx++; renderQuestion(); } else { finish(); }
-    }, 220);
+    // pernyataan skala langsung lanjut; pertanyaan kenalan menunggu tombol Lanjut
+    if (!QUESTIONS[idx].profile) {
+      advanceTimer = setTimeout(function () { advanceTimer = null; advance(); }, 240);
+    }
   }
 
   var NS = "http://www.w3.org/2000/svg";
@@ -610,8 +686,14 @@ p { margin: 0; }
     } else { el.hidden = true; }
   }
 
-  $("start").addEventListener("click", function () { idx = 0; answers = []; renderQuestion(); show("quiz"); });
-  $("back").addEventListener("click", function () { if (idx > 0 && !advanceTimer) { idx--; renderQuestion(); } });
+  $("next").addEventListener("click", function () {
+    if (state === "intro") { idx = 0; answers = []; renderQuestion(); show("quiz"); return; }
+    if (state === "quiz" && answers[idx] !== undefined && !advanceTimer) advance();
+  });
+  $("back").addEventListener("click", function () {
+    if (advanceTimer) return;
+    if (idx > 0) { idx--; renderQuestion(); window.scrollTo(0, 0); } else { show("intro"); }
+  });
   $("again").addEventListener("click", restart);
   $("copy").addEventListener("click", function () {
     var msg = $("copyMsg");
@@ -632,6 +714,7 @@ p { margin: 0; }
 
   buildMeter($("introMeter"), 3);
   showPrev();
+  show("intro");
 })();
 </script>
 </body></html>
