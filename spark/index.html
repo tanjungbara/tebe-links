@@ -692,6 +692,7 @@ main { flex: 1 0 auto; padding: 20px max(20px, env(safe-area-inset-right, 0px)) 
     Array.prototype.forEach.call(document.querySelectorAll(".wa-soon"), function (p) { p.hidden = has; });
     $("copyMsg").textContent = "";
     show("result");
+    track("Lead");
   }
 
   function restart() { answers = []; idx = 0; profile = {}; show("intro"); showPrev(); }
@@ -730,6 +731,13 @@ main { flex: 1 0 auto; padding: 20px max(20px, env(safe-area-inset-right, 0px)) 
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(lastText).then(function () { msg.textContent = "Tersalin."; }, fallback);
     } else { fallback(); }
+  });
+
+  // Meta Pixel: Lead saat kuis selesai, Contact saat klik tombol WhatsApp. Tanpa isi jawaban.
+  function track(name) { try { if (window.fbq) window.fbq("track", name); } catch (e) {} }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("a.wa") : null;
+    if (a) track("Contact");
   });
 
   buildMeter($("introMeter"), 3);
